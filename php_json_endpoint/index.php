@@ -1,13 +1,42 @@
+
 <?php
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-use App\Models\CartItem;
-use App\Models\Product;
-
 header('Content-Type: application/json');
+
+// Product class
+class Product
+{
+    public function __construct(
+        private string $name,
+        private float $price
+    ) {}
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+}
+
+// CartItem class
+class CartItem
+{
+    public function __construct(
+        private Product $product,
+        private int $quantity
+    ) {}
+
+    public function getSubtotal(): float
+    {
+        return $this->product->getPrice() * $this->quantity;
+    }
+}
 
 function respond(array $data, int $statusCode): never
 {
@@ -102,7 +131,7 @@ if (!array_key_exists($productId, $products)) {
 
 $product = $products[$productId];
 
-// Create cart item using existing OOP class
+// Create cart item
 $cartItem = new CartItem($product, $quantity);
 
 // Return response
